@@ -32,7 +32,7 @@
 1. Клонируйте репозиторий
 
 ```bash
-git clone https://github.com/DNG-AMES/tw-bot-spammer.git
+https://github.com/fail4k/TW-Bot-Spammer
 ```
 
 2. Установите зависимости
