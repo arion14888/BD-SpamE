@@ -1,0 +1,209 @@
+body {
+	font-family: 'Consolas', monospace;
+	margin: 0;
+	padding: 0;
+	background-color: #0a0a0a;
+	color: #00ff00;
+	user-select: none;
+	overflow: hidden;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	background-color: #0a0a0a;
+	padding: 15px;
+	border: 1px solid #00ff00;
+	width: 260px;
+	height: 380px;
+}
+
+h1 {
+	text-align: center;
+	color: #00ff00;
+	margin: 0;
+	padding: 3px 0;
+	font-size: 16px;
+	text-transform: uppercase;
+	border-bottom: 1px solid #00ff00;
+}
+
+h2 {
+	margin: 0;
+	padding: 10px 0;
+	font-size: 18px;
+	color: #00ff00;
+}
+
+.settings-panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+	padding: 10px 0;
+}
+
+/* Основной блок настроек */
+.main-settings {
+	margin-bottom: auto;
+}
+
+.setting-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	height: 24px;
+}
+
+.setting-item label {
+	color: #00ff00;
+	font-size: 14px;
+	min-width: 70px;
+}
+
+.setting-item input,
+.setting-item select {
+	width: 120px;
+	padding: 3px 5px;
+	border: 1px solid #00ff00;
+	background-color: #000000;
+	color: #00ff00;
+	font-family: 'Consolas', monospace;
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+/* Режимы */
+.modes {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 15px 0;
+	margin: 10px 0;
+	border-top: 1px solid #00ff00;
+	border-bottom: 1px solid #00ff00;
+}
+
+.mode-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.mode-item input[type='radio'] {
+	appearance: none;
+	width: 14px;
+	height: 14px;
+	border: 1px solid #00ff00;
+	border-radius: 50%;
+	background: #000;
+	cursor: pointer;
+	margin: 0;
+}
+
+.mode-item input[type='radio']:checked {
+	background: #00ff00;
+	box-shadow: 0 0 5px #00ff00;
+}
+
+.mode-item label {
+	cursor: pointer;
+	font-size: 14px;
+}
+
+/* Дополнительные настройки режимов */
+#messageSettings,
+#voteSettings {
+	margin: 10px 0;
+}
+
+/* Кнопки управления */
+.controls {
+	display: flex;
+	gap: 8px;
+	margin: 10px 0;
+}
+
+.btn {
+	flex: 1;
+	padding: 5px;
+	font-size: 14px;
+	border: 1px solid #00ff00;
+	background-color: #000000;
+	color: #00ff00;
+	cursor: pointer;
+	font-family: 'Consolas', monospace;
+	transition: all 0.1s;
+}
+
+.btn:hover {
+	background-color: #00ff00;
+	color: #000000;
+}
+
+/* Статус */
+.status {
+	text-align: center;
+	padding: 4px;
+	border: 1px solid #00ff00;
+}
+
+#statusText {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+input:focus,
+select:focus {
+	outline: none;
+	background-color: #0a0a0a;
+}
+
+.logs {
+	background-color: #2a2a2a;
+	padding: 15px;
+	border-radius: 5px;
+	height: 200px;
+	overflow-y: auto;
+}
+
+#logArea {
+	font-family: monospace;
+	white-space: pre-wrap;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+/* Стили скролла */
+::-webkit-scrollbar {
+	width: 5px;
+	display: block;
+}
+
+::-webkit-scrollbar-track {
+	background: #0a0a0a;
+	border: 1px solid #00ff00;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #00ff00;
+	border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #00cc00;
+	box-shadow: 0 0 5px #00ff00;
+}
+
+.footer {
+	text-align: center;
+	font-size: 12px;
+	color: #00ff00;
+	opacity: 0.7;
+	margin-top: 5px;
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TW Bot Spammer</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="container">
+			<h1>TW Bot Spammer</h1>
+
+			<div class="settings-panel">
+				<div class="main-settings">
+					<div class="setting-item">
+						<label for="serverAddress">Server:</label>
+						<input type="text" id="serverAddress" placeholder="IP:порт" />
+					</div>
+
+					<div class="modes">
+						<div class="mode-item">
+							<input
+								type="radio"
+								id="spamMode"
+								name="mode"
+								value="spam"
+								checked
+							/>
+							<label for="spamMode">Spam Mode</label>
+						</div>
+						<div class="mode-item">
+							<input type="radio" id="voteMode" name="mode" value="vote" />
+							<label for="voteMode">Vote Mode</label>
+						</div>
+						<div class="mode-item">
+							<input
+								type="radio"
+								id="messageMode"
+								name="mode"
+								value="message"
+							/>
+							<label for="messageMode">Message Mode</label>
+						</div>
+					</div>
+
+					<div class="setting-item" id="messageSettings" style="display: none">
+						<label for="botMessage">Message:</label>
+						<input type="text" id="botMessage" value="Я ПИДОРАС" />
+					</div>
+
+					<div class="setting-item" id="voteSettings" style="display: none">
+						<label for="voteType">Vote:</label>
+						<select id="voteType">
+							<option value="1">Yes</option>
+							<option value="0">No</option>
+						</select>
+					</div>
+
+					<div class="setting-item">
+						<label for="botCount">Bots:</label>
+						<input type="number" id="botCount" value="3" min="1" max="10" />
+					</div>
+					<div class="setting-item">
+						<label for="botDelay">Delay (ms):</label>
+						<input
+							type="number"
+							id="botDelay"
+							value="100"
+							min="50"
+							max="1000"
+						/>
+					</div>
+					<div class="setting-item">
+						<label for="cycleDelay">Cycle (ms):</label>
+						<input type="number" id="cycleDelay" value="100" min="500" />
+					</div>
+				</div>
+
+				<div class="controls">
+					<button id="startBtn" class="btn">START</button>
+					<button id="stopBtn" class="btn">STOP</button>
+				</div>
+
+				<div class="status">
+					<span id="statusText">STOPPED</span>
+				</div>
+			</div>
+
+			<div class="footer">
+				<span>DNG-AMES © 2024</span>
+			</div>
+		</div>
+		<script src="renderer.js"></script>
+	</body>
+</html>
