@@ -11,7 +11,7 @@ const botCount = document.getElementById('botCount')
 const botDelay = document.getElementById('botDelay')
 const cycleDelay = document.getElementById('cycleDelay')
 const botMessage = document.getElementById('botMessage')
-const voteType = document.getElementById('voteType')
+const botNickname = document.getElementById('botNickname')
 
 // Режимы работы
 const modes = {
@@ -23,10 +23,11 @@ const modes = {
 // Показ/скрытие настроек в зависимости от режима
 function updateModeSettings() {
 	const messageSettings = document.getElementById('messageSettings')
-	const voteSettings = document.getElementById('voteSettings')
+	messageSettings.classList.remove('active')
 
-	messageSettings.style.display = modes.message.checked ? 'flex' : 'none'
-	voteSettings.style.display = modes.vote.checked ? 'flex' : 'none'
+	if (modes.message.checked) {
+		messageSettings.classList.add('active')
+	}
 }
 
 // Добавляем слушатели для переключения режимов
@@ -37,7 +38,6 @@ Object.values(modes).forEach(mode => {
 async function startBotCycle() {
 	if (isRunning) return
 
-	// Проверяем, что IP введен
 	const [ip, portStr] = serverAddress.value.split(':')
 	if (!ip || !portStr) {
 		statusText.textContent = 'ОШИБКА: Введите IP:порт'
@@ -55,12 +55,12 @@ async function startBotCycle() {
 	isRunning = true
 	updateStatus()
 
-	// Режим голосования
+	// Режим болванки (без голосования)
 	if (modes.vote.checked) {
 		const bots = []
 		const botCountValue = parseInt(botCount.value)
 
-		// Создаем указанное количество ботов для голосования
+		// Создаем указанное количество ботов
 		for (let i = 1; i <= botCountValue; i++) {
 			if (!isRunning) {
 				for (const bot of bots) {
@@ -73,33 +73,20 @@ async function startBotCycle() {
 			}
 
 			try {
-				const bot = await createBot(ip, port)
+				const bot = await createBot(ip, port, botNickname.value)
 				bots.push(bot)
 				bot.connect()
-				// Ждем подключения и голосуем
-				await new Promise(resolve => {
-					bot.once('connected', async () => {
-						try {
-							const voteValue = voteType.value === '1' ? 1 : 0
-							await bot.game.vote(voteValue)
-						} catch (error) {
-							console.error('Ошибка при голосовании:', error)
-						}
-						resolve()
-					})
-					setTimeout(resolve, 5000) // таймаут если не подключился
-				})
 			} catch (error) {
 				console.error('Ошибка при создании бота:', error)
 			}
 		}
 
-		// Боты остаются подключенными после голосования
+		// Боты остаются подключенными
 		while (isRunning) {
 			await new Promise(resolve => setTimeout(resolve, 1000))
 		}
 
-		// Отключаем ботов, когда isRunning становится false
+		// Отключаем ботов при остановке
 		for (const bot of bots) {
 			try {
 				bot.Disconnect()
@@ -130,7 +117,7 @@ async function startBotCycle() {
 				}
 
 				try {
-					const bot = await createBot(ip, port)
+					const bot = await createBot(ip, port, botNickname.value)
 					bots.push(bot)
 					bot.connect()
 				} catch (error) {
@@ -171,7 +158,7 @@ async function startBotCycle() {
 								} catch (error) {}
 							}
 							resolve()
-						}, 2000) // Уменьшил таймаут для быстрого отключения
+						}, 2000)
 					})
 				})
 			)
@@ -202,7 +189,7 @@ async function startBotCycle() {
 				}
 
 				try {
-					const bot = await createBot(ip, port)
+					const bot = await createBot(ip, port, botNickname.value)
 					bots.push(bot)
 					bot.connect()
 					await new Promise(resolve =>
@@ -217,7 +204,9 @@ async function startBotCycle() {
 				for (const bot of bots) {
 					try {
 						bot.Disconnect()
-					} catch (error) {}
+					} catch (error) {
+						console.error('Ошибка при отключении бота:', error)
+					}
 				}
 				await disconnectAllBots()
 				return
@@ -263,8 +252,9 @@ async function stopBotCycle() {
 }
 
 function updateStatus() {
-	statusText.textContent = isRunning ? 'RUNNING' : 'STOPPED'
-	statusText.style.color = isRunning ? '#00ff00' : '#ff0000'
+	statusText.textContent = isRunning ? 'ЗАПУЩЕНО' : 'ОСТАНОВЛЕНО'
+	const statusDisplay = document.querySelector('.status-display')
+	statusDisplay.dataset.status = isRunning ? 'running' : 'stopped'
 }
 
 startBtn.addEventListener('click', startBotCycle)

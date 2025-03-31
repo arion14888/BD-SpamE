@@ -6,16 +6,29 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1>TW Bot Spammer</h1>
+			<div class="header">
+				<h1>TW Bot Spammer</h1>
+			</div>
 
-			<div class="settings-panel">
-				<div class="main-settings">
-					<div class="setting-item">
-						<label for="serverAddress">Server:</label>
+			<div class="content">
+				<div class="server-section">
+					<div class="input-group">
+						<label for="serverAddress">Адрес сервера</label>
 						<input type="text" id="serverAddress" placeholder="IP:порт" />
 					</div>
+					<div class="input-group">
+						<label for="botNickname">Никнейм бота</label>
+						<input
+							type="text"
+							id="botNickname"
+							placeholder="Никнейм"
+							value="ПИДОР"
+						/>
+					</div>
+				</div>
 
-					<div class="modes">
+				<div class="modes-section">
+					<div class="mode-group">
 						<div class="mode-item">
 							<input
 								type="radio"
@@ -24,11 +37,7 @@
 								value="spam"
 								checked
 							/>
-							<label for="spamMode">Spam Mode</label>
-						</div>
-						<div class="mode-item">
-							<input type="radio" id="voteMode" name="mode" value="vote" />
-							<label for="voteMode">Vote Mode</label>
+							<label for="spamMode">Спам режим</label>
 						</div>
 						<div class="mode-item">
 							<input
@@ -37,29 +46,28 @@
 								name="mode"
 								value="message"
 							/>
-							<label for="messageMode">Message Mode</label>
+							<label for="messageMode">Сообщение</label>
+						</div>
+						<div class="mode-item">
+							<input type="radio" id="voteMode" name="mode" value="vote" />
+							<label for="voteMode">Болванка</label>
 						</div>
 					</div>
+				</div>
 
-					<div class="setting-item" id="messageSettings" style="display: none">
-						<label for="botMessage">Message:</label>
+				<div class="settings-section">
+					<div class="input-group" id="messageSettings">
+						<label for="botMessage">Сообщение</label>
 						<input type="text" id="botMessage" value="Я ПИДОРАС" />
 					</div>
 
-					<div class="setting-item" id="voteSettings" style="display: none">
-						<label for="voteType">Vote:</label>
-						<select id="voteType">
-							<option value="1">Yes</option>
-							<option value="0">No</option>
-						</select>
-					</div>
-
-					<div class="setting-item">
-						<label for="botCount">Bots:</label>
+					<div class="input-group">
+						<label for="botCount">Количество ботов</label>
 						<input type="number" id="botCount" value="3" min="1" max="10" />
 					</div>
-					<div class="setting-item">
-						<label for="botDelay">Delay (ms):</label>
+
+					<div class="input-group">
+						<label for="botDelay">Задержка (мс)</label>
 						<input
 							type="number"
 							id="botDelay"
@@ -68,19 +76,21 @@
 							max="1000"
 						/>
 					</div>
-					<div class="setting-item">
-						<label for="cycleDelay">Cycle (ms):</label>
+
+					<div class="input-group">
+						<label for="cycleDelay">Задержка цикла (мс)</label>
 						<input type="number" id="cycleDelay" value="100" min="500" />
 					</div>
 				</div>
+			</div>
 
-				<div class="controls">
-					<button id="startBtn" class="btn">START</button>
-					<button id="stopBtn" class="btn">STOP</button>
+			<div class="controls-section">
+				<div class="status-display" data-status="stopped">
+					<span id="statusText">ОСТАНОВЛЕНО</span>
 				</div>
-
-				<div class="status">
-					<span id="statusText">STOPPED</span>
+				<div class="buttons">
+					<button id="startBtn" class="btn btn-start">ЗАПУСК</button>
+					<button id="stopBtn" class="btn btn-stop">СТОП</button>
 				</div>
 			</div>
 

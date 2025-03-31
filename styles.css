@@ -1,209 +1,275 @@
-body {
-	font-family: 'Consolas', monospace;
+:root {
+	--primary-color: #00ffaa;
+	--bg-color: #0a0a14;
+	--secondary-bg: #12121c;
+	--border-color: #1a1a2f;
+	--text-color: #ffffff;
+	--accent-color: #00ffaa;
+	--error-color: #ff2255;
+	--success-color: #00ffaa;
+	--gradient: linear-gradient(135deg, #00ffaa 0%, #00a3ff 100%);
+}
+
+* {
 	margin: 0;
 	padding: 0;
-	background-color: #0a0a0a;
-	color: #00ff00;
-	user-select: none;
+	box-sizing: border-box;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+/* Запрещаем скролл на всех уровнях */
+html,
+body {
 	overflow: hidden;
+}
+
+body {
+	font-family: 'Segoe UI', sans-serif;
+	background-color: var(--bg-color);
+	color: var(--text-color);
 	height: 100vh;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	user-select: none;
+	overflow: hidden;
 }
 
 .container {
+	background-color: var(--secondary-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 12px;
+	width: 300px;
+	padding: 10px;
 	display: flex;
 	flex-direction: column;
-	background-color: #0a0a0a;
-	padding: 15px;
-	border: 1px solid #00ff00;
-	width: 260px;
-	height: 380px;
-}
-
-h1 {
-	text-align: center;
-	color: #00ff00;
-	margin: 0;
-	padding: 3px 0;
-	font-size: 16px;
-	text-transform: uppercase;
-	border-bottom: 1px solid #00ff00;
-}
-
-h2 {
-	margin: 0;
-	padding: 10px 0;
-	font-size: 18px;
-	color: #00ff00;
-}
-
-.settings-panel {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	height: 100%;
-	padding: 10px 0;
-}
-
-/* Основной блок настроек */
-.main-settings {
-	margin-bottom: auto;
-}
-
-.setting-item {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	gap: 8px;
-	height: 24px;
+	box-shadow: 0 0 30px rgba(0, 255, 170, 0.1);
+	overflow: hidden;
 }
 
-.setting-item label {
-	color: #00ff00;
+.header {
+	text-align: center;
+	padding: 5px;
+	margin-bottom: 3px;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.header h1 {
 	font-size: 14px;
-	min-width: 70px;
+	font-weight: 600;
+	color: var(--primary-color);
+	text-transform: uppercase;
+	letter-spacing: 1px;
 }
 
-.setting-item input,
-.setting-item select {
-	width: 120px;
-	padding: 3px 5px;
-	border: 1px solid #00ff00;
-	background-color: #000000;
-	color: #00ff00;
-	font-family: 'Consolas', monospace;
-	font-size: 14px;
-	box-sizing: border-box;
-}
-
-/* Режимы */
-.modes {
+.content {
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
-	padding: 15px 0;
-	margin: 10px 0;
-	border-top: 1px solid #00ff00;
-	border-bottom: 1px solid #00ff00;
+	gap: 12px;
+	overflow: hidden;
+}
+
+.server-section,
+.modes-section,
+.settings-section {
+	background-color: var(--bg-color);
+	border-radius: 8px;
+	padding: 8px;
+	border: 1px solid var(--border-color);
+}
+
+.input-group {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	margin-bottom: 4px;
+}
+
+.input-group:last-child {
+	margin-bottom: 0;
+}
+
+.input-group label {
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--primary-color);
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.input-group input,
+.input-group select {
+	background-color: var(--secondary-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	color: var(--text-color);
+	padding: 4px 8px;
+	font-size: 12px;
+	transition: all 0.2s;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+	outline: none;
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 2px rgba(0, 255, 170, 0.1);
+}
+
+.mode-group {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
 }
 
 .mode-item {
 	display: flex;
 	align-items: center;
-	gap: 8px;
+	gap: 2px;
+	padding: 2px;
+	border-radius: 6px;
+	transition: all 0.2s;
+}
+
+.mode-item:hover {
+	background-color: var(--secondary-bg);
 }
 
 .mode-item input[type='radio'] {
 	appearance: none;
-	width: 14px;
-	height: 14px;
-	border: 1px solid #00ff00;
+	width: 16px;
+	height: 16px;
+	border: 2px solid var(--border-color);
 	border-radius: 50%;
-	background: #000;
 	cursor: pointer;
-	margin: 0;
+	position: relative;
+	transition: all 0.2s;
 }
 
 .mode-item input[type='radio']:checked {
-	background: #00ff00;
-	box-shadow: 0 0 5px #00ff00;
+	border-color: var(--primary-color);
+}
+
+.mode-item input[type='radio']:checked::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--gradient);
 }
 
 .mode-item label {
 	cursor: pointer;
-	font-size: 14px;
+	font-size: 12px;
+	font-weight: 500;
 }
 
-/* Дополнительные настройки режимов */
-#messageSettings,
-#voteSettings {
-	margin: 10px 0;
-}
-
-/* Кнопки управления */
-.controls {
+.controls-section {
 	display: flex;
+	flex-direction: column;
 	gap: 8px;
-	margin: 10px 0;
+}
+
+.status-display {
+	text-align: center;
+	padding: 6px;
+	border-radius: 6px;
+	background-color: var(--bg-color);
+	font-weight: 600;
+	font-size: 12px;
+	letter-spacing: 1px;
+	border: 1px solid var(--border-color);
+}
+
+.status-display[data-status='running'] {
+	color: var(--success-color);
+	border-color: var(--success-color);
+	box-shadow: 0 0 10px rgba(0, 255, 170, 0.1);
+}
+
+.status-display[data-status='stopped'] {
+	color: var(--error-color);
+	border-color: var(--error-color);
+	box-shadow: 0 0 10px rgba(255, 34, 85, 0.1);
+}
+
+.buttons {
+	display: flex;
+	gap: 10px;
 }
 
 .btn {
 	flex: 1;
-	padding: 5px;
-	font-size: 14px;
-	border: 1px solid #00ff00;
-	background-color: #000000;
-	color: #00ff00;
+	padding: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	border: none;
+	border-radius: 6px;
 	cursor: pointer;
-	font-family: 'Consolas', monospace;
-	transition: all 0.1s;
+	transition: all 0.2s;
+	text-transform: uppercase;
+	letter-spacing: 1px;
 }
 
-.btn:hover {
-	background-color: #00ff00;
-	color: #000000;
+.btn-start {
+	background: var(--gradient);
+	color: var(--bg-color);
 }
 
-/* Статус */
-.status {
-	text-align: center;
-	padding: 4px;
-	border: 1px solid #00ff00;
+.btn-start:hover {
+	opacity: 0.9;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 15px rgba(0, 255, 170, 0.2);
 }
 
-#statusText {
-	font-weight: bold;
-	font-size: 14px;
+.btn-stop {
+	background: var(--error-color);
+	color: white;
 }
 
-input:focus,
-select:focus {
-	outline: none;
-	background-color: #0a0a0a;
-}
-
-.logs {
-	background-color: #2a2a2a;
-	padding: 15px;
-	border-radius: 5px;
-	height: 200px;
-	overflow-y: auto;
-}
-
-#logArea {
-	font-family: monospace;
-	white-space: pre-wrap;
-	font-size: 14px;
-	line-height: 1.4;
-}
-
-/* Стили скролла */
-::-webkit-scrollbar {
-	width: 5px;
-	display: block;
-}
-
-::-webkit-scrollbar-track {
-	background: #0a0a0a;
-	border: 1px solid #00ff00;
-}
-
-::-webkit-scrollbar-thumb {
-	background: #00ff00;
-	border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background: #00cc00;
-	box-shadow: 0 0 5px #00ff00;
+.btn-stop:hover {
+	opacity: 0.9;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 15px rgba(255, 34, 85, 0.2);
 }
 
 .footer {
 	text-align: center;
 	font-size: 12px;
-	color: #00ff00;
-	opacity: 0.7;
-	margin-top: 5px;
+	color: var(--text-color);
+	opacity: 0.5;
+	padding-top: 6px;
+	border-top: 1px solid var(--border-color);
+}
+
+/* Удаляем все стили скроллбара */
+::-webkit-scrollbar {
+	display: none;
+}
+
+/* Фиксированная высота для settings-section */
+.settings-section {
+	min-height: 160px;
+}
+
+/* Скрываем/показываем настройки без смещения */
+#messageSettings,
+#voteSettings {
+	display: none;
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+#messageSettings.active,
+#voteSettings.active {
+	display: block;
+	position: static;
+	opacity: 1;
+	pointer-events: auto;
 }

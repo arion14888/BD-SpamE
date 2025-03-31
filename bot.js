@@ -2,7 +2,7 @@ const { Client } = require('teeworlds')
 
 let activeBots = []
 
-async function createBot(serverIp, serverPort) {
+async function createBot(serverIp, serverPort, nickname) {
 	// Проверяем, что IP и порт переданы
 	if (!serverIp || !serverPort) {
 		throw new Error('Не указан IP или порт сервера')
@@ -11,7 +11,11 @@ async function createBot(serverIp, serverPort) {
 	const randomNum = Math.floor(Math.random() * 10000)
 		.toString()
 		.padStart(4, '0')
-	const botName = `ПИДОР${randomNum}`
+	// Проверяем, передан ли никнейм и не пустой ли он
+	const botName =
+		nickname && nickname.trim() !== ''
+			? `${nickname}${randomNum}` // Если есть никнейм, добавляем к нему цифры
+			: randomNum // Если никнейма нет, используем только цифры
 
 	const client = new Client(serverIp, serverPort, botName, {
 		identity: {

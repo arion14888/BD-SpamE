@@ -17,8 +17,8 @@ process.on('SIGTERM', async () => {
 
 function createWindow() {
 	const win = new BrowserWindow({
-		width: 280,
-		height: 460, // Фиксированный размер под все режимы
+		width: 300,
+		height: 580,
 		resizable: false,
 		autoHideMenuBar: true,
 		webPreferences: {
