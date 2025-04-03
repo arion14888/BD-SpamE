@@ -20,20 +20,23 @@ const modes = {
 	message: document.getElementById('messageMode'),
 }
 
-// Показ/скрытие настроек в зависимости от режима
-function updateModeSettings() {
-	const messageSettings = document.getElementById('messageSettings')
-	messageSettings.classList.remove('active')
-
-	if (modes.message.checked) {
-		messageSettings.classList.add('active')
-	}
-}
-
 // Добавляем слушатели для переключения режимов
 Object.values(modes).forEach(mode => {
 	mode.addEventListener('change', updateModeSettings)
 })
+
+// Показ/скрытие настроек в зависимости от режима
+function updateModeSettings() {
+	const messageSettings = document.getElementById('messageSettings')
+	
+	// Скрываем поле ввода сообщения по умолчанию
+	messageSettings.classList.remove('active')
+	
+	// Показываем поле ввода сообщения только если выбран режим сообщений
+	if (modes.message.checked) {
+		messageSettings.classList.add('active')
+	}
+}
 
 async function startBotCycle() {
 	if (isRunning) return
@@ -76,6 +79,13 @@ async function startBotCycle() {
 				const bot = await createBot(ip, port, botNickname.value)
 				bots.push(bot)
 				bot.connect()
+				
+				// Добавляем отправку сообщения при подключении
+				bot.once('connected', async () => {
+					// В режиме болванки боты не должны отправлять сообщения
+					// поэтому просто пустая функция
+					console.log(`Бот в режиме болванки подключился`)
+				})
 			} catch (error) {
 				console.error('Ошибка при создании бота:', error)
 			}
@@ -139,7 +149,11 @@ async function startBotCycle() {
 							}
 
 							try {
+								// Устанавливаем задержку на 75 мс
+								await new Promise(resolve => setTimeout(resolve, 75))
 								await bot.game.Say(botMessage.value)
+								// Устанавливаем задержку на 75 мс
+								await new Promise(resolve => setTimeout(resolve, 75))
 								await bot.Disconnect()
 							} catch (error) {
 								console.error(
@@ -158,7 +172,7 @@ async function startBotCycle() {
 								} catch (error) {}
 							}
 							resolve()
-						}, 2000)
+						}, 2000) // Возвращаем нормальный таймаут
 					})
 				})
 			)
@@ -176,6 +190,7 @@ async function startBotCycle() {
 	else {
 		while (isRunning) {
 			const bots = []
+			const botPromises = []
 
 			for (let i = 1; i <= parseInt(botCount.value); i++) {
 				if (!isRunning) {
@@ -192,6 +207,22 @@ async function startBotCycle() {
 					const bot = await createBot(ip, port, botNickname.value)
 					bots.push(bot)
 					bot.connect()
+					
+					// В режиме спама боты просто подключаются и отключаются без отправки сообщений
+					// Создаем промис для каждого бота
+					const botPromise = new Promise(resolve => {
+						bot.once('connected', async () => {
+							// Ничего не отправляем, просто ждем 75 мс и разрешаем промис
+							await new Promise(resolve => setTimeout(resolve, 75))
+							resolve()
+						})
+						
+						// Таймаут
+						setTimeout(resolve, 1000)
+					})
+					
+					botPromises.push(botPromise)
+					
 					await new Promise(resolve =>
 						setTimeout(resolve, parseInt(botDelay.value))
 					)
@@ -200,6 +231,9 @@ async function startBotCycle() {
 				}
 			}
 
+			// Ждем, пока все боты отправят сообщения
+			await Promise.all(botPromises)
+			
 			if (!isRunning) {
 				for (const bot of bots) {
 					try {
@@ -212,10 +246,7 @@ async function startBotCycle() {
 				return
 			}
 
-			await new Promise(resolve =>
-				setTimeout(resolve, parseInt(cycleDelay.value))
-			)
-
+			// Отключаем ботов только после того, как все отправили сообщения
 			for (const bot of bots) {
 				try {
 					bot.Disconnect()
@@ -230,7 +261,9 @@ async function startBotCycle() {
 			}
 
 			if (isRunning) {
-				await new Promise(resolve => setTimeout(resolve, 10))
+				await new Promise(resolve =>
+					setTimeout(resolve, parseInt(cycleDelay.value))
+				)
 			}
 		}
 	}

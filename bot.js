@@ -38,6 +38,7 @@ async function createBot(serverIp, serverPort, nickname) {
 	})
 
 	activeBots.push(client)
+	// Убираем автоматическое подключение
 	return client
 }
 

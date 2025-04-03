@@ -247,6 +247,15 @@ body {
 	border-top: 1px solid var(--border-color);
 }
 
+/* Стили для скрытия/отображения поля сообщения */
+#messageSettings {
+	display: none;
+}
+
+#messageSettings.active {
+	display: flex;
+}
+
 /* Удаляем все стили скроллбара */
 ::-webkit-scrollbar {
 	display: none;
