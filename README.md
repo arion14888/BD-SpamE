@@ -104,7 +104,7 @@ npm run build
 ## 💰 Поддержать разработчика
 
 Если вам нравится проект и вы хотите поддержать его развитие:
-- 🎁 **DonationAlerts**: [donationalerts.com/r/fail4k](https://www.donationalerts.com/r/fail4k)
+- 🎁 **DonationAlerts**: [donationalerts.com/r/nixxmare](https://www.donationalerts.com/r/nixxmare)
 
 ## 👥 Автор
 
