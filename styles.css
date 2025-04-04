@@ -44,15 +44,16 @@ body {
 	padding: 10px;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 5px;
 	box-shadow: 0 0 30px rgba(0, 255, 170, 0.1);
 	overflow: hidden;
+	max-height: 95vh;
 }
 
 .header {
 	text-align: center;
-	padding: 5px;
-	margin-bottom: 3px;
+	padding: 3px;
+	margin-bottom: 2px;
 	border-bottom: 1px solid var(--border-color);
 }
 
@@ -67,7 +68,7 @@ body {
 .content {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 8px;
 	overflow: hidden;
 }
 
@@ -76,7 +77,7 @@ body {
 .settings-section {
 	background-color: var(--bg-color);
 	border-radius: 8px;
-	padding: 8px;
+	padding: 6px;
 	border: 1px solid var(--border-color);
 }
 
@@ -84,7 +85,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	gap: 1px;
-	margin-bottom: 4px;
+	margin-bottom: 3px;
 }
 
 .input-group:last-child {
@@ -105,7 +106,7 @@ body {
 	border: 1px solid var(--border-color);
 	border-radius: 6px;
 	color: var(--text-color);
-	padding: 4px 8px;
+	padding: 3px 6px;
 	font-size: 12px;
 	transition: all 0.2s;
 }
@@ -120,14 +121,14 @@ body {
 .mode-group {
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: 1px;
 }
 
 .mode-item {
 	display: flex;
 	align-items: center;
 	gap: 2px;
-	padding: 2px;
+	padding: 1px;
 	border-radius: 6px;
 	transition: all 0.2s;
 }
@@ -172,12 +173,12 @@ body {
 .controls-section {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 6px;
 }
 
 .status-display {
 	text-align: center;
-	padding: 6px;
+	padding: 5px;
 	border-radius: 6px;
 	background-color: var(--bg-color);
 	font-weight: 600;
@@ -205,7 +206,7 @@ body {
 
 .btn {
 	flex: 1;
-	padding: 6px;
+	padding: 5px;
 	font-size: 12px;
 	font-weight: 600;
 	border: none;
@@ -240,10 +241,10 @@ body {
 
 .footer {
 	text-align: center;
-	font-size: 12px;
+	font-size: 10px;
 	color: var(--text-color);
 	opacity: 0.5;
-	padding-top: 6px;
+	padding-top: 3px;
 	border-top: 1px solid var(--border-color);
 }
 
@@ -263,7 +264,59 @@ body {
 
 /* Фиксированная высота для settings-section */
 .settings-section {
-	min-height: 160px;
+	min-height: 140px;
+}
+
+/* Для режима рассылки убираем фиксированную высоту и добавляем увеличенные элементы */
+.broadcast-active-mode .settings-section {
+	min-height: auto;
+	padding: 12px;
+}
+
+/* Увеличиваем размеры контролов в режиме рассылки */
+.broadcast-active-mode .broadcast-btn {
+	padding: 15px;
+	margin-bottom: 15px;
+}
+
+.broadcast-active-mode .btn-icon {
+	font-size: 24px;
+	margin-right: 12px;
+}
+
+.broadcast-active-mode .btn-label {
+	font-size: 14px;
+}
+
+.broadcast-active-mode .broadcast-delay,
+.broadcast-active-mode .broadcast-cycle {
+	padding: 12px 15px;
+	margin-bottom: 12px;
+}
+
+.broadcast-active-mode .broadcast-delay label,
+.broadcast-active-mode .broadcast-cycle label {
+	font-size: 13px;
+}
+
+.broadcast-active-mode .delay-unit {
+	font-size: 13px;
+}
+
+.broadcast-active-mode .toggle-switch {
+	width: 50px;
+	height: 25px;
+}
+
+.broadcast-active-mode .toggle-slider:before {
+	height: 19px;
+	width: 19px;
+	left: 3px;
+	bottom: 3px;
+}
+
+.broadcast-active-mode input:checked + .toggle-slider:before {
+	transform: translateX(25px);
 }
 
 /* Скрываем/показываем настройки без смещения */
@@ -281,4 +334,480 @@ body {
 	position: static;
 	opacity: 1;
 	pointer-events: auto;
+}
+
+#broadcastSettings {
+	display: none;
+}
+
+#broadcastSettings.active {
+	display: block;
+}
+
+.char-counter {
+	text-align: right;
+	font-size: 12px;
+	color: #666;
+	margin-top: 5px;
+}
+
+textarea#serverList {
+	width: 100%;
+	font-family: monospace;
+	resize: vertical;
+	padding: 8px;
+	border: 1px solid #444;
+	background-color: #222;
+	color: #eee;
+	border-radius: 3px;
+}
+
+/* Стили для модальных окон */
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(3px);
+}
+
+.modal-content {
+	background-color: var(--secondary-bg);
+	margin: 10% auto;
+	padding: 15px;
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	width: 80%;
+	max-width: 500px;
+	box-shadow: 0 0 30px rgba(0, 255, 170, 0.2);
+	animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+	from {opacity: 0; transform: translateY(-20px);}
+	to {opacity: a; transform: translateY(0);}
+}
+
+.modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-bottom: 1px solid var(--border-color);
+	padding-bottom: 10px;
+	margin-bottom: 15px;
+}
+
+.modal-header h2 {
+	font-size: 16px;
+	color: var(--primary-color);
+	margin: 0;
+}
+
+.close {
+	color: var(--text-color);
+	font-size: 22px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.close:hover {
+	color: var(--primary-color);
+}
+
+.modal-body {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.modal-footer {
+	text-align: right;
+	margin-top: 15px;
+	border-top: 1px solid var(--border-color);
+	padding-top: 15px;
+}
+
+/* Стиль для кнопок, открывающих модальные окна */
+.modal-btn {
+	width: 100%;
+	padding: 5px 8px;
+	background: var(--bg-color);
+	color: var(--text-color);
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	font-size: 11px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.modal-btn:hover {
+	border-color: var(--primary-color);
+	background: var(--secondary-bg);
+	box-shadow: 0 0 10px rgba(0, 255, 170, 0.1);
+}
+
+/* Улучшенные стили для textarea */
+textarea#serverList {
+	width: 100%;
+	height: 200px;
+	font-family: monospace;
+	resize: vertical;
+	padding: 8px;
+	border: 1px solid var(--border-color);
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	border-radius: 6px;
+}
+
+/* Компактное отображение кнопок в режиме рассылки */
+.broadcast-buttons {
+	display: none;
+}
+
+.setting-item.compact {
+	display: none;
+}
+
+/* Скрываем обычные настройки в режиме рассылки */
+.broadcast-active .standard-settings {
+	display: none;
+}
+
+/* Скрываем только поле ввода IP сервера в режиме рассылки, но оставляем никнейм */
+.broadcast-active-mode .server-section {
+	visibility: visible;
+	opacity: 1;
+	height: auto;
+}
+
+.broadcast-active-mode .server-section .input-group:first-child {
+	visibility: hidden;
+	opacity: 0;
+	height: 0;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+/* Стильный дизайн для режима рассылки */
+.broadcast-controls {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+
+.broadcast-btn {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--gradient);
+	border: none;
+	border-radius: 8px;
+	padding: 10px;
+	color: var(--bg-color);
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	box-shadow: 0 3px 8px rgba(0, 255, 170, 0.2);
+	overflow: hidden;
+	position: relative;
+}
+
+.broadcast-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 5px 15px rgba(0, 255, 170, 0.3);
+}
+
+.broadcast-btn:active {
+	transform: translateY(0);
+	box-shadow: 0 2px 5px rgba(0, 255, 170, 0.2);
+}
+
+.btn-icon {
+	font-size: 18px;
+	margin-right: 8px;
+}
+
+.btn-label {
+	font-size: 12px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.broadcast-delay {
+	display: flex;
+	align-items: center;
+	background: var(--bg-color);
+	border-radius: 8px;
+	padding: 8px 12px;
+	border: 1px solid var(--border-color);
+}
+
+.broadcast-delay label {
+	flex: 0 0 auto;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--primary-color);
+	margin-right: 8px;
+	white-space: nowrap;
+}
+
+.broadcast-delay input {
+	flex: 1;
+	background-color: transparent;
+	border: none;
+	color: var(--text-color);
+	font-size: 13px;
+	text-align: right;
+	padding: 0;
+	width: 60px;
+	-moz-appearance: textfield;
+}
+
+.broadcast-delay input::-webkit-outer-spin-button,
+.broadcast-delay input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.broadcast-delay input:focus {
+	outline: none;
+}
+
+.delay-unit {
+	color: var(--primary-color);
+	font-size: 11px;
+	margin-left: 4px;
+	font-weight: 600;
+}
+
+/* Изменяем цвета для кнопок */
+.broadcast-btn.message-btn {
+	background: linear-gradient(135deg, #00ffaa 0%, #00d6a3 100%);
+}
+
+.broadcast-btn.server-btn {
+	background: linear-gradient(135deg, #00a3ff 0%, #0077cc 100%);
+}
+
+/* Стили для переключателя циклического режима */
+.broadcast-cycle {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: var(--bg-color);
+	border-radius: 8px;
+	padding: 8px 12px;
+	border: 1px solid var(--border-color);
+	margin-top: 6px;
+}
+
+.broadcast-cycle label {
+	flex: 0 0 auto;
+	font-size: 11px;
+	font-weight: 600;
+	color: var(--primary-color);
+}
+
+/* Стили для переключателя */
+.toggle-switch {
+	position: relative;
+	display: inline-block;
+	width: 40px;
+	height: 20px;
+}
+
+.toggle-switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+.toggle-slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #333;
+	transition: 0.4s;
+	border-radius: 20px;
+}
+
+.toggle-slider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 2px;
+	bottom: 2px;
+	background-color: var(--text-color);
+	transition: 0.3s;
+	border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+	background-color: var(--primary-color);
+}
+
+input:checked + .toggle-slider:before {
+	transform: translateX(20px);
+	background-color: var(--bg-color);
+}
+
+/* Стили для текстового поля сообщения рассылки */
+textarea#broadcastMessage {
+	width: 100%;
+	resize: vertical;
+	min-height: 80px;
+	padding: 8px;
+	border: 1px solid var(--border-color);
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	border-radius: 6px;
+	font-family: inherit;
+	font-size: 13px;
+}
+
+textarea#broadcastMessage:focus {
+	outline: none;
+	border-color: var(--primary-color);
+	box-shadow: 0 0 0 2px rgba(0, 255, 170, 0.1);
+}
+
+/* Стили для заголовка и блоков рассылки */
+.broadcast-title {
+	font-size: 14px;
+	color: var(--primary-color);
+	text-align: center;
+	margin-bottom: 15px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 600;
+}
+
+.broadcast-options {
+	margin-bottom: 15px;
+}
+
+.broadcast-info {
+	background-color: rgba(0, 255, 170, 0.05);
+	border: 1px solid rgba(0, 255, 170, 0.1);
+	border-radius: 8px;
+	padding: 10px;
+	margin-top: 15px;
+}
+
+.info-text {
+	font-size: 12px;
+	color: var(--text-color);
+	opacity: 0.8;
+	text-align: center;
+	line-height: 1.4;
+}
+
+/* Адаптация контейнера в режиме рассылки */
+.broadcast-active-mode .container {
+	height: auto;
+	justify-content: normal;
+}
+
+.broadcast-active-mode .content {
+	flex-grow: 1;
+	justify-content: center;
+}
+
+/* Увеличиваем размеры для режима рассылки */
+.broadcast-active-mode .broadcast-title {
+	font-size: 16px;
+	margin-bottom: 20px;
+}
+
+.broadcast-active-mode .broadcast-info {
+	padding: 15px;
+	margin-top: 20px;
+}
+
+.broadcast-active-mode .info-text {
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.broadcast-active-mode .status-display {
+	padding: 10px;
+	font-size: 14px;
+}
+
+/* Возвращаем нормальный размер элементов управления */
+.broadcast-active-mode .broadcast-btn {
+	padding: 10px;
+	margin-bottom: 8px;
+}
+
+.broadcast-active-mode .btn-icon {
+	font-size: 18px;
+	margin-right: 8px;
+}
+
+.broadcast-active-mode .btn-label {
+	font-size: 12px;
+}
+
+.broadcast-active-mode .broadcast-delay,
+.broadcast-active-mode .broadcast-cycle {
+	padding: 8px 12px;
+	margin-bottom: 6px;
+}
+
+.broadcast-active-mode .broadcast-delay label,
+.broadcast-active-mode .broadcast-cycle label {
+	font-size: 11px;
+}
+
+.broadcast-active-mode .delay-unit {
+	font-size: 11px;
+}
+
+.broadcast-active-mode .toggle-switch {
+	width: 40px;
+	height: 20px;
+}
+
+.broadcast-active-mode .toggle-slider:before {
+	height: 16px;
+	width: 16px;
+	left: 2px;
+	bottom: 2px;
+}
+
+.broadcast-active-mode input:checked + .toggle-slider:before {
+	transform: translateX(20px);
+}
+
+/* Возвращаем обычный размер текста и отступов */
+.broadcast-active-mode .broadcast-title {
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+
+.broadcast-active-mode .broadcast-info {
+	display: none;
+}
+
+.broadcast-active-mode .info-text {
+	display: none;
+}
+
+.broadcast-active-mode .status-display {
+	padding: 5px;
+	font-size: 12px;
 }

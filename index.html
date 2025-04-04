@@ -52,6 +52,10 @@
 							<input type="radio" id="voteMode" name="mode" value="vote" />
 							<label for="voteMode">Болванка</label>
 						</div>
+						<div class="mode-item">
+							<input type="radio" id="broadcastMode" name="mode" value="broadcast" />
+							<label for="broadcastMode">Рассылка</label>
+						</div>
 					</div>
 				</div>
 
@@ -61,25 +65,54 @@
 						<input type="text" id="botMessage" value="Я ПИДОРАС" />
 					</div>
 
-					<div class="input-group">
-						<label for="botCount">Количество ботов</label>
-						<input type="number" id="botCount" value="3" min="1" max="10" />
+					<div class="standard-settings">
+						<div class="input-group">
+							<label for="botCount">Количество ботов</label>
+							<input type="number" id="botCount" value="3" min="1" max="10" />
+						</div>
+
+						<div class="input-group">
+							<label for="botDelay">Задержка (мс)</label>
+							<input
+								type="number"
+								id="botDelay"
+								value="75"
+								min="20"
+								max="1000"
+							/>
+						</div>
+
+						<div class="input-group">
+							<label for="cycleDelay">Задержка цикла (мс)</label>
+							<input type="number" id="cycleDelay" value="75" min="20" />
+						</div>
 					</div>
 
-					<div class="input-group">
-						<label for="botDelay">Задержка (мс)</label>
-						<input
-							type="number"
-							id="botDelay"
-							value="75"
-							min="20"
-							max="1000"
-						/>
-					</div>
-
-					<div class="input-group">
-						<label for="cycleDelay">Задержка цикла (мс)</label>
-						<input type="number" id="cycleDelay" value="75" min="20" />
+					<div id="broadcastSettings" class="settings-group">
+						<div class="broadcast-controls">
+							<button id="openMessageBtn" class="broadcast-btn message-btn">
+								<span class="btn-icon">✉</span>
+								<span class="btn-label">Сообщение</span>
+							</button>
+							<button id="openServerListBtn" class="broadcast-btn server-btn">
+								<span class="btn-icon">📋</span>
+								<span class="btn-label">Серверы</span>
+							</button>
+						</div>
+						<div class="broadcast-options">
+							<div class="broadcast-delay">
+								<label for="broadcastDelay">Задержка:</label>
+								<input type="number" id="broadcastDelay" value="2000" min="500" />
+								<span class="delay-unit">мс</span>
+							</div>
+							<div class="broadcast-cycle">
+								<label for="broadcastCycleToggle">Циклично:</label>
+								<label class="toggle-switch">
+									<input type="checkbox" id="broadcastCycleToggle">
+									<span class="toggle-slider"></span>
+								</label>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -95,7 +128,43 @@
 			</div>
 
 			<div class="footer">
-				<span>DNG-AMES © 2024</span>
+				<span>DNG-AMES © 2025</span>
+			</div>
+		</div>
+		<div id="messageModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Сообщение для рассылки</h2>
+					<span class="close">&times;</span>
+				</div>
+				<div class="modal-body">
+					<div class="input-group">
+						<label for="broadcastMessage">Текст сообщения (макс. 130 символов):</label>
+						<textarea id="broadcastMessage" maxlength="130" rows="4" placeholder="Введите сообщение для рассылки...">Привет! Это тестовое сообщение для рассылки.</textarea>
+						<div class="char-counter"><span id="charCount">0</span>/130</div>
+					</div>
+					<div class="modal-footer">
+						<button id="saveMessageBtn" class="btn btn-start">Сохранить</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="serverListModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h2>Список серверов</h2>
+					<span class="close">&times;</span>
+				</div>
+				<div class="modal-body">
+					<div class="input-group">
+						<label for="serverList">Введите серверы (по одному на строку):</label>
+						<textarea id="serverList" rows="10" placeholder="Введите серверы в формате IP:порт, каждый с новой строки. Например:&#10;127.0.0.1:8303&#10;example.com:8303"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button id="saveServerListBtn" class="btn btn-start">Сохранить</button>
+					</div>
+				</div>
 			</div>
 		</div>
 		<script src="renderer.js"></script>
