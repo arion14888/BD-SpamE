@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <em>Мощный спамер ботов для Teeworlds/DDNet от компании <a href="https://dngames.ru/">DNG-AMES</a></em>
+  <em>Мощный спамер ботов для Teeworlds/DDNet от fail4k(ник в ddnet)</em>
 </p>
 
 ## ✨ Возможности
