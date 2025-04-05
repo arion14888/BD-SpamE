@@ -1,31 +1,49 @@
-TW-BOT-SPAMMER LICENSE
+# TW-BOT-SPAMMER LICENSE
 
-TERMS AND CONDITIONS
+Copyright (c) 2024 fail4k. All rights reserved.
 
-1. This project, TW-Bot-Spammer, is created by fail4k. You are allowed to use, modify, and share it, but you CANNOT claim it as your own.
+## Terms and Conditions
 
-2. Copyright License Grant. Subject to the terms and conditions of this License, each Contributor hereby grants You a perpetual, worldwide, non-exclusive, royalty-free, irrevocable copyright license to:
-   - Reproduce, modify, and prepare derivative works of the Work.
-   - Publicly display, perform, sublicense, and distribute the Work and its derivative works in Source or Object form.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software with the following restrictions:
 
-3. Patent License Grant. Subject to the terms and conditions of this License, each Contributor hereby grants You a perpetual, worldwide, non-exclusive, royalty-free, irrevocable patent license to:
-   - Make, have made, use, offer to sell, sell, import, and otherwise transfer the Work.
-   - This license applies only to patent claims licensable by the Contributor that are necessarily infringed by their Contribution(s) alone or in combination with the Work.
-   - If You initiate patent litigation against any entity (including a cross-claim or counterclaim) alleging that the Work or a Contribution constitutes patent infringement, then any granted patent licenses under this License for that Work terminate immediately.
+### PERMISSIONS
+- The rights to use, copy, and modify the Software
+- The rights to privately use and distribute the Software
+- The rights to merge, publish, and distribute modified versions of the Software
 
-4. Credit and Attribution.
-   - You may not remove or alter any credits referring to the original creator (fail4k).
+### RESTRICTIONS
+- Commercial use, sale, or monetization of the Software or any modified versions is PROHIBITED
+- Distribution of the Software or modified versions must include this license and copyright notice
+- The original copyright notices and attributions must be preserved
 
-5. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works in any medium, with or without modifications, under the following conditions:
-   (a) Recipients must receive a copy of this License.
-   (b) Modified files must carry prominent notices stating that changes were made.
-   (c) Copyright, patent, trademark, and attribution notices from the original Work must be retained in any distributed Source form, except for notices that do not pertain to modified parts.
-   (d) If the Work includes a "NOTICE" file, any distributed Derivative Works must include a readable copy of its attribution notices, excluding those unrelated to the modified Work.
+### NO WARRANTY
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
-6. Liability.
-   - If you distribute a modified version, you do so at your own risk and must take full responsibility for it.
+### MODIFICATIONS
+- Any distributed modifications must clearly state that they are modified versions of the original
+- All modifications must be distributed under the same license terms
+
+### TERMINATION
+- Any violation of the terms automatically terminates the rights granted by this license
+
+This license permits free usage and modification but strictly prohibits commercial distribution.
+Use of this Software constitutes acceptance of these terms.
 
 END OF TERMS
 
-Copyright 2025 fail4k
+/* ========================================================================== *
+ *                                                                            *
+ *                      TW-BOT-SPAMMER © 2024-2025                           *
+ *                      DEVELOPED BY fail4k / DNG AMES                        *
+ *                        ALL RIGHTS RESERVED                                 *
+ *                                                                            *
+ * ========================================================================== */
 
