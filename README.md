@@ -80,6 +80,7 @@ npm run dist
 
 - **Electron** - для создания кросс-платформенного приложения
 - **DDNet Client v17** - для обхода большинства ограничений серверов
+- **teeworlds-library-ts** - библиотека для ботов: https://github.com/swarfeya/teeworlds-library-ts
 
 ## ⚠️ Отказ от ответственности
 
