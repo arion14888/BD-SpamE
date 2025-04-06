@@ -54,3 +54,14 @@ ipcMain.on('disconnect-all-bots', async () => {
 app.on('before-quit', async () => {
 	await disconnectAllBots()
 })
+
+// Добавляем обработчик для принудительной сборки мусора
+ipcMain.on('force-gc', () => {
+	if (global.gc) {
+		// Вызываем сборщик мусора
+		global.gc();
+		console.log('Принудительная сборка мусора выполнена');
+	} else {
+		console.log('Сборка мусора недоступна. Запустите приложение с параметром --expose-gc');
+	}
+});
