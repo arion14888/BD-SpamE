@@ -1,9 +1,5 @@
 # TW Bot Spammer
 
-<p align="center">
-  <img src="screenshots/main.png" alt="TW Bot Spammer Interface" width="300">
-</p>
-
 ## 👋 От автора
 
 Привет! Я **fail4k**, создатель этого спамера для Teeworlds/DDNet. 
