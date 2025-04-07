@@ -22,7 +22,7 @@
 							type="text"
 							id="botNickname"
 							placeholder="Никнейм"
-							value="DIE"
+							value="By fail4k"
 						/>
 					</div>
 				</div>
@@ -62,29 +62,39 @@
 				<div class="settings-section">
 					<div class="input-group" id="messageSettings">
 						<label for="botMessage">Сообщение</label>
-						<input type="text" id="botMessage" value="Я ПИДОРАС" />
+						<input type="text" id="botMessage" value="Attack by fail4k" />
 					</div>
 
 					<div class="standard-settings">
-						<div class="input-group">
-							<label for="botCount">Количество ботов</label>
-							<input type="number" id="botCount" value="3" min="1" max="10" />
-						</div>
+					<div class="input-group">
+						<label for="botCount">Количество ботов</label>
+						<input type="number" id="botCount" value="3" min="1" max="10" />
+					</div>
 
-						<div class="input-group">
-							<label for="botDelay">Задержка (мс)</label>
-							<input
-								type="number"
-								id="botDelay"
+					<div class="input-group">
+						<label for="botDelay">Задержка (мс)</label>
+						<input
+							type="number"
+							id="botDelay"
 								value="75"
 								min="20"
-								max="1000"
-							/>
-						</div>
+							max="1000"
+						/>
+					</div>
 
-						<div class="input-group">
-							<label for="cycleDelay">Задержка цикла (мс)</label>
+					<div class="input-group">
+						<label for="cycleDelay">Задержка цикла (мс)</label>
 							<input type="number" id="cycleDelay" value="75" min="20" />
+						</div>
+						
+						<div class="input-group" id="turboModeToggle">
+							<div class="broadcast-cycle">
+								<label for="turboToggle">Турбо режим:</label>
+								<label class="toggle-switch">
+									<input type="checkbox" id="turboToggle">
+									<span class="toggle-slider"></span>
+								</label>
+							</div>
 						</div>
 					</div>
 
@@ -128,7 +138,7 @@
 			</div>
 
 			<div class="footer">
-				<span>DNG-AMES © 2025</span>
+				<span>fail4k © 2025</span>
 			</div>
 		</div>
 		<div id="messageModal" class="modal">

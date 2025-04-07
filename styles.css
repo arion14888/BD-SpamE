@@ -170,10 +170,17 @@ body {
 	font-weight: 500;
 }
 
-.controls-section {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
+/* Удаляем новые стили переключателей */
+.mode-selector {
+	display: none;
+}
+
+.mode-option {
+	display: none;
+}
+
+.mode-label {
+	display: none;
 }
 
 .status-display {
@@ -202,6 +209,7 @@ body {
 .buttons {
 	display: flex;
 	gap: 10px;
+	margin-top: 7px;
 }
 
 .btn {
@@ -810,4 +818,43 @@ textarea#broadcastMessage:focus {
 .broadcast-active-mode .status-display {
 	padding: 5px;
 	font-size: 12px;
+}
+.turbo-tooltip {
+	position: absolute;
+	background: rgba(0, 0, 0, 0.8);
+	color: #fff;
+	padding: 8px 12px;
+	border-radius: 4px;
+	font-size: 12px;
+	z-index: 1000;
+	pointer-events: none;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+	border: 1px solid #444;
+	width: auto;
+	text-align: center;
+	animation: fadeInOut 2s ease-in-out;
+}
+
+.tooltip-header {
+	color: #ff5722;
+	font-weight: bold;
+	margin-bottom: 5px;
+	text-align: center;
+	font-size: 13px;
+}
+
+.tooltip-content {
+	text-align: center;
+}
+
+.tooltip-content p {
+	margin: 3px 0;
+	white-space: nowrap;
+}
+
+@keyframes fadeInOut {
+	0% { opacity: 0; transform: translateY(10px); }
+	15% { opacity: 1; transform: translateY(0); }
+	85% { opacity: 1; transform: translateY(0); }
+	100% { opacity: 0; transform: translateY(-10px); }
 }

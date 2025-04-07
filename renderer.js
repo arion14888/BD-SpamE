@@ -52,12 +52,16 @@ function updateCharCount() {
 	}
 }
 
+// Получаем элемент турбо-режима
+const turboToggle = document.getElementById('turboToggle')
+
 // Показ/скрытие настроек в зависимости от режима
 function updateModeSettings() {
 	const messageSettings = document.getElementById('messageSettings')
 	const broadcastSettings = document.getElementById('broadcastSettings')
 	const settingsSection = document.querySelector('.settings-section')
 	const bodyElement = document.body
+	const turboModeToggle = document.getElementById('turboModeToggle')
 	
 	// Скрываем все специфические настройки
 	messageSettings.classList.remove('active')
@@ -78,6 +82,13 @@ function updateModeSettings() {
 	}
 	
 	updateCharCount()
+
+	// Показываем переключатель турбо-режима только в режиме спама
+	if (modes.spam.checked) {
+		turboModeToggle.style.display = 'block'
+	} else {
+		turboModeToggle.style.display = 'none'
+	}
 }
 
 /**
@@ -109,6 +120,20 @@ async function startBotCycle() {
 			await runMessageMode(ip, port)
 		} else if (modes.broadcast.checked) {
 			await runBroadcastMode()
+		} else if (modes.spam.checked) {
+			const [ip, port] = parseServer(serverAddress.value)
+			if (!ip || !port) {
+				throw new Error('Неверный адрес сервера')
+			}
+			
+			// Проверяем включен ли турбо-режим
+			if (turboToggle.checked) {
+				// Запускаем режим заход/выход
+				await cycleJoinLeaveMode(ip, port)
+			} else {
+				// Запускаем обычный спам режим
+				await runSpamMode(ip, port)
+			}
 		} else {
 			const [ip, port] = parseServer(serverAddress.value)
 			if (!ip || !port) {
@@ -151,7 +176,7 @@ async function runDummyMode(ip, port) {
 	startBtn.disabled = true;
 	stopBtn.disabled = false;
 	
-	const bots = []
+		const bots = []
 	const maxBots = parseInt(botCount.value)
 	let connectedCount = 0
 	
@@ -270,7 +295,7 @@ async function runDummyMode(ip, port) {
 			}
 			
 			// Гарантированное отключение всех ботов
-			await disconnectAllBots()
+					await disconnectAllBots()
 		} catch (e) {
 			console.error("Ошибка при отключении ботов:", e);
 			// Финальная попытка отключения
@@ -325,7 +350,11 @@ async function runSpamMode(ip, port) {
 							// Отправляем input и мгновенно отключаемся
 							try {
 								bot.sendInput();
-								bot.Disconnect();
+								setTimeout(() => {
+									try {
+										bot.Disconnect();
+									} catch (e) {}
+								}, 100);
 							} catch (e) {}
 							
 							// Обновляем статус с низкой частотой для производительности
@@ -338,25 +367,29 @@ async function runSpamMode(ip, port) {
 						
 						// Подключаем бота
 						bot.connect();
-					} catch (error) {}
+					} catch (error) {
+						console.error('Ошибка при создании бота:', error);
+					}
 				})());
 			}
 			
 			// Ждем завершения пакета
 			try {
-				// Ждем с таймаутом для проверки флага остановки
+				// Увеличиваем таймаут для более стабильной работы
 				await Promise.race([
 					Promise.all(promises),
-					new Promise(r => setTimeout(r, 50))
+					new Promise(r => setTimeout(r, 100))
 				]);
-			} catch (e) {}
+			} catch (e) {
+				console.error('Ошибка при ожидании пакета:', e);
+			}
 			
 			// Проверяем флаг остановки
 			if (!isRunning) break;
 		}
 		
-		// Ждем завершения подключений
-		await new Promise(r => setTimeout(r, 300));
+		// Увеличиваем время ожидания завершения подключений
+		await new Promise(r => setTimeout(r, 500));
 		
 		// Отключаем все соединения
 		await disconnectAllBots();
@@ -374,7 +407,7 @@ async function runSpamMode(ip, port) {
 			await new Promise(r => setTimeout(r, parseInt(cycleDelay.value)));
 		} else {
 			// Минимальная задержка для проверки флага остановки
-			await new Promise(r => setTimeout(r, 1));
+			await new Promise(r => setTimeout(r, 10));
 		}
 	}
 	
@@ -392,7 +425,7 @@ async function runMessageMode(ip, port) {
 	startBtn.disabled = true;
 	stopBtn.disabled = false;
 	
-	while (isRunning) {
+		while (isRunning) {
 		const maxBots = parseInt(botCount.value);
 		const message = botMessage.value.trim();
 		let connectedCount = 0;
@@ -438,9 +471,9 @@ async function runMessageMode(ip, port) {
 										try { bot.Disconnect(); } catch (e) {}
 										activeBots--;
 										return;
-									}
-									
-									try {
+				}
+
+				try {
 										// Вызываем sendInput для активации чата
 										bot.sendInput();
 										
@@ -525,7 +558,7 @@ async function runMessageMode(ip, port) {
 							
 							// Подключаем бота
 							bot.connect();
-						} catch (error) {
+					} catch (error) {
 							activeBots--;
 						}
 					})());
@@ -672,7 +705,7 @@ function updateStatus() {
 	// Обновляем текст статуса только если не находимся в режиме рассылки
 	// или если процесс остановлен
 	if (!isRunning || !modes.broadcast.checked) {
-		statusText.textContent = isRunning ? 'ЗАПУЩЕНО' : 'ОСТАНОВЛЕНО'
+	statusText.textContent = isRunning ? 'ЗАПУЩЕНО' : 'ОСТАНОВЛЕНО'
 	}
 	
 	// Обновляем класс состояния
@@ -810,270 +843,296 @@ broadcastCycleToggle.addEventListener('change', () => {
 /**
  * Рассылка сообщения на один сервер
  */
-async function broadcastToServer(ip, port, message) {
+async function broadcastToServer(server, message) {
+	if (!isRunning) return false;
+	
+	const [ip, port] = parseServer(server);
+	if (!ip || !port) {
+		console.error('Неверный адрес сервера:', server);
+		return false;
+	}
+
 	try {
 		// Создаем бота
-		const bot = await createBot(ip, port, botNickname.value)
+		const bot = await createBot(ip, port, botNickname.value);
+		if (!isRunning) {
+			bot.Disconnect();
+			return false;
+		}
+
+		// Подключаемся к серверу
+		bot.connect();
 		
-		// Устанавливаем обработчик подключения
-		let success = false
-		let isComplete = false
-		let connectHandler = null
+		// Ждем подключения с таймаутом
+		const connected = await new Promise((resolve) => {
+			const timeout = setTimeout(() => {
+				bot.Disconnect();
+				resolve(false);
+			}, 5000);
+
+			bot.once('connected', () => {
+				clearTimeout(timeout);
+				resolve(true);
+			});
+
+			bot.once('disconnected', () => {
+				clearTimeout(timeout);
+				resolve(false);
+			});
+		});
 		
-		// Создаем и сохраняем ссылку на обработчик
-		connectHandler = async () => {
-			try {
-				// Регистрируем бота сразу после подключения
-				bot.sendInput()
-				
-				// Ждем 500мс после подключения перед отправкой сообщения
-				console.log(`Подключено к ${ip}:${port}, ожидание 500 мс...`)
-				await new Promise(r => setTimeout(r, 500))
-				
-				// Дополнительная регистрация для надежности
-				bot.sendInput()
-				
-				// Еще раз небольшая задержка
-				await new Promise(r => setTimeout(r, 150))
-				
-				// Отправляем сообщение
-				console.log(`Отправка сообщения на ${ip}:${port}...`)
-				
-				// Последовательно пробуем все доступные методы отправки
-				try {
-					// Сначала пробуем через game.Say
-					await bot.game.Say(message)
-					success = true
-				} catch (err) {
-					console.log(`Не удалось отправить через game.Say, пробуем sendMessage: ${err.message}`)
-					try {
-						// Затем пробуем через sendMessage
-						const result = await bot.sendMessage(message)
-						success = result ? true : false
-					} catch (err2) {
-						console.error(`Не удалось отправить через sendMessage: ${err2.message}`)
-						
-						// Последняя попытка - вызвать Say напрямую
-						try {
-							if (bot.Say) {
-								await bot.Say(message)
-								success = true
-							}
-						} catch (err3) {
-							console.error(`Не удалось отправить через Say: ${err3.message}`)
-						}
-					}
-				}
-				
-				// Логируем результат
-				if (success) {
-					console.log(`Сообщение успешно отправлено на ${ip}:${port}`)
-				} else {
-					console.error(`Не удалось отправить сообщение на ${ip}:${port} ни одним из методов`)
-				}
-				
-				// Ждем 500мс после отправки сообщения
-				await new Promise(r => setTimeout(r, 500))
-			} catch (err) {
-				console.error(`Ошибка при отправке сообщения на ${ip}:${port}: ${err.message}`)
-			} finally {
-				// Отключаем бота
-				console.log(`Отключение от ${ip}:${port}...`)
-				try { 
-					// Удаляем обработчик перед отключением
-					if (bot.removeListener && connectHandler) {
-						bot.removeListener('connected', connectHandler)
-					}
-					
-					// Плавное отключение
-					await bot.Disconnect() 
-				} catch (e) {}
-				
-				// Отмечаем завершение
-				isComplete = true
+		if (!connected || !isRunning) {
+			bot.Disconnect();
+			return false;
+		}
+
+		// Регистрируем бота для активации чата
+		bot.sendInput();
+		
+		// Задержка перед отправкой сообщения
+		await new Promise(r => setTimeout(r, 500));
+		
+		if (!isRunning) {
+			bot.Disconnect();
+			return false;
+		}
+
+		// Отправляем сообщение
+		let messageSent = false;
+		try {
+			if (bot.game && bot.game.Say) {
+				await bot.game.Say(message);
+				messageSent = true;
+				console.log(`Сообщение отправлено на ${server} через game.Say`);
+			} else if (bot.sendMessage) {
+				const result = await bot.sendMessage(message);
+				messageSent = !!result;
+				console.log(`Сообщение отправлено на ${server} через sendMessage`);
+			} else if (bot.sendChat) {
+				bot.sendChat(message);
+				messageSent = true;
+				console.log(`Сообщение отправлено на ${server} через sendChat`);
+			}
+			
+			// Задержка после отправки сообщения
+			await new Promise(r => setTimeout(r, 300));
+		} catch (e) {
+			console.error('Ошибка отправки сообщения:', e);
+			messageSent = false;
+		}
+
+		// Отключаемся
+		bot.Disconnect();
+		
+		// Обновляем статус
+		if (isRunning) {
+			const currentServer = serverList.value;
+			const servers = currentServer.split('\n').filter(s => s.trim());
+			const currentIndex = servers.indexOf(server);
+			
+			if (currentIndex >= 0) {
+				statusText.textContent = `РАССЫЛКА: ${currentIndex + 1}/${servers.length} серверов`;
 			}
 		}
 		
-		// Подключаем обработчик и бота
-		bot.once('connected', connectHandler)
-		
-		// Обработчик отключения для предотвращения зависания
-		bot.once('disconnect', () => {
-			isComplete = true
-		})
-		
-		// Подключаем бота
-		bot.connect()
-		
-		// Ждем завершения или таймаут
-		const timeout = 6000 // 6 секунд максимум на одну рассылку
-		
-		// Создаем таймер для таймаута
-		const result = await new Promise(resolve => {
-			// Таймер для таймаута
-			const timeoutId = setTimeout(() => {
-				if (!isComplete) {
-					console.log(`Таймаут для сервера ${ip}:${port}`)
-					// Удаляем обработчик перед отключением
-					if (bot.removeListener && connectHandler) {
-						bot.removeListener('connected', connectHandler)
-					}
-					try { bot.Disconnect() } catch (e) {}
-					isComplete = true
-					resolve(false)
-				}
-			}, timeout)
-			
-			// Интервал проверки завершения
-			const checkInterval = setInterval(() => {
-				if (isComplete) {
-					clearInterval(checkInterval)
-					clearTimeout(timeoutId)
-					resolve(success)
-				}
-			}, 100)
-		})
-		
-		// Принудительно очищаем все ссылки для сборщика мусора
-		connectHandler = null
-		
-		return result
+		return messageSent;
 	} catch (error) {
-		console.error(`Ошибка при рассылке на ${ip}:${port}: ${error.message}`)
-		return false
+		console.error('Ошибка при рассылке на сервер:', server, error);
+		if (isRunning) {
+			statusText.textContent = `РАССЫЛКА: Ошибка на сервере ${server}`;
+		}
+		return false;
 	}
 }
 
 /**
- * Режим рассылки сообщений по списку серверов
+ * Режим рассылки по серверам
  */
 async function runBroadcastMode() {
-	// Используем данные из хранилища
-	const servers = broadcastData.serverList
+	isRunning = true;
+	startBtn.disabled = true;
+	stopBtn.disabled = false;
+
+	// Получаем настройки рассылки
+	const message = broadcastMessage.value || broadcastData.message;
+	const delay = parseInt(broadcastDelay.value) || 0;
+	const isCycleMode = broadcastCycleToggle.checked;
 	
-	// Проверяем, что есть список серверов
-	if (servers.length === 0) {
-		console.error('Список серверов пуст или некорректен')
-		alert('Необходимо указать список серверов!')
-		return
+	// Обрабатываем список серверов, удаляя пустые строки
+	let servers;
+	
+	// Если есть серверы в поле ввода, используем их
+	if (serverList.value && serverList.value.trim()) {
+		servers = serverList.value.split('\n').filter(s => s.trim());
+	} 
+	// Иначе используем серверы из хранилища
+	else if (broadcastData.serverList && broadcastData.serverList.length > 0) {
+		servers = broadcastData.serverList;
+		// Также заполняем поле ввода для наглядности
+		serverList.value = broadcastData.serverList.join('\n');
+	} 
+	// Если серверов нет нигде
+	else {
+		alert('Добавьте хотя бы один сервер для рассылки');
+		isRunning = false;
+		updateStatus();
+		return;
 	}
 	
-	// Получаем текст сообщения
-	const message = broadcastData.message.trim()
+	// Сохраняем серверы в хранилище для следующего использования
+	broadcastData.serverList = servers;
+	saveBroadcastData();
+	
+	// Проверяем наличие сообщения
 	if (!message) {
-		console.error('Текст сообщения не может быть пустым')
-		alert('Необходимо ввести сообщение для рассылки!')
-		return
+		alert('Введите сообщение для рассылки');
+		isRunning = false;
+		updateStatus();
+		return;
 	}
 	
-	// Получаем задержку между серверами (в миллисекундах)
-	let delay = parseInt(broadcastDelay.value)
+	// Сохраняем сообщение в хранилище
+	broadcastData.message = message;
+	broadcastMessage.value = message;
+	saveBroadcastData();
 	
-	// Проверяем минимальное значение
-	const MIN_BROADCAST_DELAY = 300
-	if (delay < MIN_BROADCAST_DELAY) {
-		delay = MIN_BROADCAST_DELAY
-		broadcastDelay.value = MIN_BROADCAST_DELAY
-		console.log(`Установлена минимальная задержка рассылки: ${MIN_BROADCAST_DELAY} мс`)
-	}
+	console.log(`Запуск рассылки на ${servers.length} серверов. Циклический режим: ${isCycleMode}`);
 	
-	// Режим циклического повторения
-	const cycleMode = broadcastData.cycleMode
+	// Счетчики для статистики
+	let successCount = 0;
+	let cycleCount = 0;
+	let currentIndex = 0;
 	
-	console.log(`Начинаем рассылку на ${servers.length} серверов${cycleMode ? ' (циклический режим)' : ''}`)
-	console.log(`Установленная задержка между серверами: ${delay} мс`)
-	
-	// Счетчик успешных рассылок
-	let successCount = 0
-	let cycle = 1
-	
-	// Запускаем цикл рассылки
-	while (isRunning) {
-		// Пробегаем по каждому серверу последовательно
-		for (let i = 0; i < servers.length; i++) {
-			if (!isRunning) break
-			
-			// Явно вызываем сборку мусора через IPC после каждых 5 серверов
-			if (i > 0 && i % 5 === 0) {
-				ipcRenderer.send('force-gc')
-				await new Promise(r => setTimeout(r, 10)) // Даем время на сборку мусора
+	// Основной цикл рассылки
+	try {
+		// Создаем копию списка серверов для обработки
+		let cycle = 1;
+		
+		// Продолжаем цикл, пока флаг isRunning = true
+		while (isRunning) {
+			// Обновляем номер цикла для цикличного режима
+			if (isCycleMode && currentIndex === 0) {
+				cycleCount = cycle;
+				statusText.textContent = `РАССЫЛКА [${currentIndex}/${servers.length}] (цикл ${cycle})`;
+			} else {
+				statusText.textContent = `РАССЫЛКА: ${currentIndex}/${servers.length} серверов`;
 			}
 			
-			const serverAddress = servers[i]
-			const [ip, port] = parseServer(serverAddress)
+			// Проверяем флаг остановки перед каждым сервером
+			if (!isRunning) break;
 			
+			// Получаем текущий сервер
+			const server = servers[currentIndex];
+			
+			// Пропускаем пустые серверы
+			if (!server || !server.trim()) {
+				currentIndex = (currentIndex + 1) % servers.length;
+				continue;
+			}
+			
+			// Парсим сервер
+			const [ip, port] = parseServer(server);
 			if (!ip || !port) {
-				console.error(`Некорректный адрес сервера: ${serverAddress}`)
-				continue
+				console.error(`Неверный формат сервера: ${server}`);
+				currentIndex = (currentIndex + 1) % servers.length;
+				continue;
 			}
 			
-			// Обновляем статус с прогрессом
-			const cycleInfo = cycleMode ? ` (цикл ${cycle})` : ''
-			statusText.textContent = `РАССЫЛКА [${i + 1}/${servers.length}]${cycleInfo}`
-			console.log(`[${i + 1}/${servers.length}]${cycleInfo} Подключаемся к серверу: ${serverAddress}`)
-			
-			// Время начала подключения к серверу
-			const startTime = Date.now()
-			
-			// Используем отдельную функцию для рассылки на один сервер
-			const success = await broadcastToServer(ip, port, message)
-			if (success) {
-				successCount++
+			// Обновляем статус с информацией о текущем сервере
+			if (isCycleMode) {
+				statusText.textContent = `РАССЫЛКА [${currentIndex+1}/${servers.length}] (цикл ${cycle})`;
+			} else {
+				statusText.textContent = `РАССЫЛКА: ${currentIndex+1}/${servers.length} серверов`;
 			}
 			
-			// Принудительно отключаем все возможные боты для освобождения ресурсов
-			await disconnectAllBots()
+			// Проверяем флаг остановки перед отправкой
+			if (!isRunning) break;
 			
-			// Вычисляем сколько времени заняла рассылка на этот сервер
-			const elapsedTime = Date.now() - startTime
-			console.log(`Время, затраченное на сервер ${serverAddress}: ${elapsedTime} мс`)
+			// Отправляем сообщение на текущий сервер
+			const success = await broadcastToServer(server, message);
+			if (success) successCount++;
 			
-			// Если задержка установлена и мы не на последнем сервере цикла
-			if ((i < servers.length - 1 || cycleMode) && isRunning) {
-				const waitTime = Math.max(0, delay - elapsedTime)
-				if (waitTime > 0) {
-					console.log(`Ожидание ${waitTime} мс до следующего сервера согласно установленной задержке ${delay} мс...`)
-					await new Promise(r => setTimeout(r, waitTime))
-				} else {
-					console.log(`Переход к следующему серверу без дополнительного ожидания (затрачено ${elapsedTime} мс > задержки ${delay} мс)`)
+			// Проверяем флаг остановки после отправки
+			if (!isRunning) break;
+			
+			// Задержка между серверами
+			if (delay > 0 && isRunning) {
+				// Ожидание с регулярной проверкой флага остановки
+				const startWait = Date.now();
+				while (isRunning && (Date.now() - startWait < delay)) {
+					// Проверяем флаг каждые 100мс
+					await new Promise(r => setTimeout(r, Math.min(100, delay)));
+					
+					// Обновляем статус с обратным отсчетом
+					if (isCycleMode) {
+						const remainingTime = Math.max(0, delay - (Date.now() - startWait));
+						const seconds = Math.ceil(remainingTime / 1000);
+						statusText.textContent = `РАССЫЛКА [${currentIndex+1}/${servers.length}] (цикл ${cycle}) - следующий через ${seconds}с`;
+					}
 				}
+				
+				// Прерываем, если кнопка стоп была нажата во время ожидания
+				if (!isRunning) break;
+			}
+			
+			// Переходим к следующему серверу
+			currentIndex = (currentIndex + 1) % servers.length;
+			
+			// Если завершили цикл и режим не цикличный - выходим
+			if (currentIndex === 0) {
+				if (!isCycleMode) {
+					break;
+				}
+				// Увеличиваем счетчик циклов
+				cycle++;
 			}
 		}
 		
-		// Принудительно отключаем все боты в конце цикла
-		await disconnectAllBots()
+		console.log(`Рассылка завершена: ${successCount} успешных отправок`);
+	} catch (error) {
+		console.error('Ошибка в режиме рассылки:', error);
+	} finally {
+		// Принудительно отключаем всех ботов
+		await disconnectAllBots();
 		
-		// Если не циклический режим, выходим после одного прохода
-		if (!cycleMode || !isRunning) {
-			break
-		}
-		
-		// Увеличиваем счетчик циклов
-		cycle++
-		
-		// Принудительно запускаем сборку мусора между циклами
-		ipcRenderer.send('force-gc')
-		
-		// Добавляем задержку между циклами равную заданной пользователем
-		if (isRunning) {
-			console.log(`Завершен цикл ${cycle-1}, ожидание ${delay} мс перед следующим циклом...`)
-			await new Promise(r => setTimeout(r, delay))
-		}
+		// Обновляем UI
+		isRunning = false;
+		statusText.textContent = `РАССЫЛКА: Остановлена`;
+		startBtn.disabled = false;
+		stopBtn.disabled = true;
 	}
-	
-	// Обновляем статус с результатами
-	const cycleInfo = cycleMode && cycle > 1 ? ` (циклов: ${cycle - 1})` : ''
-	statusText.textContent = `ЗАВЕРШЕНО: ${successCount}/${servers.length * (cycle - (cycleMode ? 0 : 1))}${cycleInfo}`
-	console.log(`Рассылка завершена. Успешно: ${successCount}/${servers.length * (cycle - (cycleMode ? 0 : 1))}${cycleInfo}`)
-	
-	// Принудительная отчистка
-	await disconnectAllBots()
-	ipcRenderer.send('force-gc')
 }
 
-// Назначение обработчиков событий
+// Назначение обработчиков событий - удаляем дублирующий код
+// Оставляем только один набор обработчиков событий
 startBtn.addEventListener('click', startBotCycle)
-stopBtn.addEventListener('click', stopBotCycle)
+stopBtn.addEventListener('click', async () => {
+	// Устанавливаем флаг остановки
+	console.log('Остановка процесса...');
+	isRunning = false;
+	
+	// Обновляем статус НЕМЕДЛЕННО
+	statusText.textContent = 'ОСТАНОВКА...';
+	
+	// Отключаем все боты немедленно
+	try {
+		disconnectAllBots();
+	} catch (e) {
+		console.error('Ошибка при отключении ботов:', e);
+	}
+	
+	// Отправляем сигнал сборки мусора
+	if (window.gc) {
+		try {
+			window.gc();
+		} catch (e) {}
+	}
+	
+	// Сбрасываем состояние UI
+	startBtn.disabled = false;
+	stopBtn.disabled = true;
+	updateStatus();
+})
 
 // Инициализация при загрузке
 updateStatus()
@@ -1167,3 +1226,171 @@ window.addEventListener('beforeunload', () => {
 		stopBotCycle()
 	}
 })
+
+/**
+ * Режим захода и выхода ботов (на основе primera)
+ */
+async function cycleJoinLeaveMode(ip, port) {
+	isRunning = true;
+	startBtn.disabled = true;
+	stopBtn.disabled = false;
+	
+	const maxBots = parseInt(botCount.value);
+	const delayValue = parseInt(botDelay.value);
+	const cycleDelayValue = parseInt(cycleDelay.value);
+	let totalJoins = 0;
+	let cycleCount = 0;
+	
+	console.log(`Запуск режима захода/выхода: ${maxBots} ботов на сервер ${ip}:${port}`);
+	statusText.textContent = `ТУРБО-РЕЖИМ: Запуск...`;
+	
+	try {
+		while (isRunning) {
+			cycleCount++;
+			let connectedCount = 0;
+			const cycleStartTime = Date.now();
+			
+			statusText.textContent = `ТУРБО-РЕЖИМ: Цикл ${cycleCount}, подключений: ${totalJoins}`;
+			
+			// Создаем список ботов параллельно
+			const botPromises = [];
+			
+			for (let i = 0; i < maxBots && isRunning; i++) {
+				const botPromise = (async () => {
+					try {
+						// Создаем бота
+						const bot = await createBot(ip, port, botNickname.value);
+						
+						// Используем Promise для отслеживания подключения
+						let connected = false;
+						
+						bot.once('connected', () => {
+							if (!isRunning) return;
+							
+							connected = true;
+							connectedCount++;
+							totalJoins++;
+							
+							// Регистрируем бота
+							bot.sendInput();
+							
+							// Если есть сообщение для отправки
+							if (botMessage.value && botMessage.value.trim() !== '') {
+								try {
+									// Отправляем сообщение немедленно
+									if (bot.game && bot.game.Say) {
+										bot.game.Say(botMessage.value.trim());
+									} else if (bot.sendMessage) {
+										bot.sendMessage(botMessage.value.trim());
+									} else if (bot.sendChat) {
+										bot.sendChat(botMessage.value.trim());
+									}
+								} catch (e) {}
+							}
+							
+							// Обновляем статус
+							if (i % 10 === 0 || i === maxBots - 1) {
+								statusText.textContent = `ТУРБО-РЕЖИМ: Цикл ${cycleCount}, подключено: ${connectedCount}/${maxBots}`;
+							}
+						});
+						
+						// Подключаем бота
+						bot.connect();
+						
+						// Мгновенное отключение для максимальной скорости
+						await new Promise(resolve => setTimeout(resolve, Math.min(50, delayValue)));
+						
+						// Отключаем бота сразу после минимальной задержки
+						try {
+							bot.Disconnect();
+						} catch (error) {}
+					} catch (error) {}
+				})();
+				
+				botPromises.push(botPromise);
+				
+				// Минимальная задержка между созданием ботов
+				if (isRunning) {
+					await new Promise(r => setTimeout(r, Math.min(10, delayValue / 10)));
+				}
+			}
+			
+			// Ждем завершения всех ботов
+			await Promise.all(botPromises);
+			
+			// Отключаем всех оставшихся ботов
+			await disconnectAllBots();
+			
+			// Если все еще работаем, показываем результаты
+			if (isRunning) {
+				const cycleTime = (Date.now() - cycleStartTime) / 1000;
+				statusText.textContent = `ТУРБО-РЕЖИМ: Цикл ${cycleCount} завершен. ${connectedCount} за ${cycleTime.toFixed(1)}сек`;
+				
+				// Минимальная задержка между циклами
+				if (cycleDelayValue > 0) {
+					await new Promise(resolve => setTimeout(resolve, cycleDelayValue));
+				} else {
+					await new Promise(r => setTimeout(r, 1)); // Почти без задержки
+				}
+			}
+			
+			if (!isRunning) break;
+		}
+	} catch (error) {
+		console.error(`Ошибка в турбо-режиме: ${error.message}`);
+	} finally {
+		await disconnectAllBots();
+		statusText.textContent = `ТУРБО-РЕЖИМ: Завершено (${totalJoins} подключений)`;
+		startBtn.disabled = false;
+		stopBtn.disabled = true;
+	}
+}
+
+function showTurboTooltip(event) {
+	const tooltip = document.createElement('div');
+	tooltip.className = 'turbo-tooltip';
+	
+	// Создаем многострочную табличку вместо простого текста
+	tooltip.innerHTML = `
+		<div class="tooltip-header">ВНИМАНИЕ!</div>
+		<div class="tooltip-content">
+			<p>Турбо-режим работает</p>
+			<p>не на всех серверах</p>
+		</div>
+	`;
+	
+	// Получаем размеры окна и элемента
+	const windowWidth = window.innerWidth;
+	const windowHeight = window.innerHeight;
+	const rect = event.target.getBoundingClientRect();
+	
+	// Позиционируем подсказку над переключателем
+	let left = rect.left;
+	let top = rect.top - 60; // Увеличиваем отступ для многострочной подсказки
+	
+	// Проверяем границы окна
+	if (left + 200 > windowWidth) { // 200 - примерная ширина подсказки
+		left = windowWidth - 220; // Оставляем отступ от правого края
+	}
+	
+	if (top < 0) {
+		top = rect.bottom + 10; // Если не помещается сверху, показываем снизу
+	}
+	
+	tooltip.style.left = `${left}px`;
+	tooltip.style.top = `${top}px`;
+	
+	document.body.appendChild(tooltip);
+	
+	setTimeout(() => {
+		tooltip.remove();
+	}, 2000);
+}
+
+// Добавляем обработчик события для переключателя турбо-режима
+document.getElementById('turboModeToggle').addEventListener('change', function(event) {
+	// Показываем подсказку только при включении турбо-режима
+	if (event.target.checked) {
+		showTurboTooltip(event);
+	}
+});
