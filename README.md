@@ -13,7 +13,6 @@
 ## 📸 Скриншоты
 
 <p align="center">
-  <img src="screenshots/spam_mode.png" alt="Режим Спама" width="280">
   <img src="screenshots/rasilka.png" alt="Режим Рассылки" width="280">
   <img src="screenshots/bolvanka.png" alt="Режим Болванки" width="280">
 </p>
