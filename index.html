@@ -1,182 +1,111 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>TW Bot Spammer</title>
-		<link rel="stylesheet" href="styles.css" />
-	</head>
-	<body>
-		<div class="container">
-			<div class="header">
-				<h1>TW Bot Spammer</h1>
-			</div>
+<head>
+    <title>BD:SpamE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="split-container">
+            <div class="header">
+                <img src="https://envs.sh/LYJ.svg.png" alt="Logo" class="logo">
+                <div class="title">BD:SpamE</div>
+            </div>
+            <div class="content">
+                <div class="left-panel">
+                    <div class="panel">
+                        <h3 class="panel-title">Настройки сервера</h3>
+                        <div class="input-group">
+                            <label for="serverAddress">Адрес сервера</label>
+                            <input type="text" id="serverAddress" placeholder="IP:ПОРТ">
+                        </div>
+                        <div class="input-group">
+                            <label for="botNickname">Никнейм бота</label>
+                            <input type="text" id="botNickname" value="ХУЕСОС">
+                        </div>
+                    </div>
 
-			<div class="content">
-				<div class="server-section">
-					<div class="input-group">
-						<label for="serverAddress">Адрес сервера</label>
-						<input type="text" id="serverAddress" placeholder="IP:порт" />
-					</div>
-					<div class="input-group">
-						<label for="botNickname">Никнейм бота</label>
-						<input
-							type="text"
-							id="botNickname"
-							placeholder="Никнейм"
-							value="By fail4k"
-						/>
-					</div>
-				</div>
+                    <div class="panel">
+                        <h3 class="panel-title">Режим работы</h3>
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="messageMode" name="mode" value="message" checked>
+                                <label for="messageMode">Сообщение</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="aboutMode" name="mode" value="about">
+                                <label for="aboutMode">О проекте</label>
+                            </div>
+                        </div>
+                    </div>
 
-				<div class="modes-section">
-					<div class="mode-group">
-						<div class="mode-item">
-							<input
-								type="radio"
-								id="spamMode"
-								name="mode"
-								value="spam"
-								checked
-							/>
-							<label for="spamMode">Спам режим</label>
-						</div>
-						<div class="mode-item">
-							<input
-								type="radio"
-								id="messageMode"
-								name="mode"
-								value="message"
-							/>
-							<label for="messageMode">Сообщение</label>
-						</div>
-						<div class="mode-item">
-							<input type="radio" id="voteMode" name="mode" value="vote" />
-							<label for="voteMode">Болванка</label>
-						</div>
-						<div class="mode-item">
-							<input type="radio" id="broadcastMode" name="mode" value="broadcast" />
-							<label for="broadcastMode">Рассылка</label>
-						</div>
-					</div>
-				</div>
+                    <div class="panel" id="messageSettings">
+                        <h3 class="panel-title">Настройки сообщения</h3>
+                        <div class="input-group" id="enableMessageContainer" style="display: flex; align-items: center;">
+                            <label for="enableMessage" style="margin-right: 10px;">Включить сообщение:</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="enableMessage" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="input-group" id="messageContent">
+                            <label for="botMessage">Текст сообщения</label>
+                            <input type="text" id="botMessage" value="ПРИВЕТ">
+                        </div>
+                        <div class="input-group" style="display: flex; align-items: center;">
+                            <label for="turboToggle" style="margin-right: 10px;">Турбо режим:</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="turboToggle">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
 
-				<div class="settings-section">
-					<div class="input-group" id="messageSettings">
-						<label for="botMessage">Сообщение</label>
-						<input type="text" id="botMessage" value="Attack by fail4k" />
-					</div>
+                    <div id="aboutSettings" class="panel" style="display: none;">
+                        <h3 class="panel-title">О проекте</h3>
+                        <div class="about-content">
+                            <div class="about-buttons">
+                                <button id="telegramBtn" class="btn">
+                                    <span>Наш Telegram</span>
+                                </button>
+                                <button id="websiteBtn" class="btn">
+                                    <span>Наш сайт</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-					<div class="standard-settings">
-					<div class="input-group">
-						<label for="botCount">Количество ботов</label>
-						<input type="number" id="botCount" value="3" min="1" max="10" />
-					</div>
+                <div class="right-panel">
+                    <div class="panel">
+                        <h3 class="panel-title">Настройки ботов</h3>
+                        <div class="input-group">
+                            <label for="botCount">Количество ботов</label>
+                            <input type="number" id="botCount" value="3" min="1" max="10">
+                        </div>
+                        <div class="input-group">
+                            <label for="botDelay">Задержка (мс)</label>
+                            <input type="number" id="botDelay" value="75" min="0" max="1000">
+                        </div>
+                        <div class="input-group">
+                            <label for="cycleDelay">Задержка цикла (мс)</label>
+                            <input type="number" id="cycleDelay" value="75" min="0">
+                        </div>
+                    </div>
 
-					<div class="input-group">
-						<label for="botDelay">Задержка (мс)</label>
-						<input
-							type="number"
-							id="botDelay"
-								value="75"
-								min="20"
-							max="1000"
-						/>
-					</div>
+                    <div class="panel">
+                        <div id="statusText" class="status-display status-stopped">ОСТАНОВЛЕНО</div>
+                        <div class="button-group">
+                            <button id="startBtn" class="btn">ЗАПУСК</button>
+                            <button id="stopBtn" class="btn">СТОП</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-					<div class="input-group">
-						<label for="cycleDelay">Задержка цикла (мс)</label>
-							<input type="number" id="cycleDelay" value="75" min="20" />
-						</div>
-						
-						<div class="input-group" id="turboModeToggle">
-							<div class="broadcast-cycle">
-								<label for="turboToggle">Турбо режим:</label>
-								<label class="toggle-switch">
-									<input type="checkbox" id="turboToggle">
-									<span class="toggle-slider"></span>
-								</label>
-							</div>
-						</div>
-					</div>
-
-					<div id="broadcastSettings" class="settings-group">
-						<div class="broadcast-controls">
-							<button id="openMessageBtn" class="broadcast-btn message-btn">
-								<span class="btn-icon">✉</span>
-								<span class="btn-label">Сообщение</span>
-							</button>
-							<button id="openServerListBtn" class="broadcast-btn server-btn">
-								<span class="btn-icon">📋</span>
-								<span class="btn-label">Серверы</span>
-							</button>
-						</div>
-						<div class="broadcast-options">
-							<div class="broadcast-delay">
-								<label for="broadcastDelay">Задержка:</label>
-								<input type="number" id="broadcastDelay" value="2000" min="500" />
-								<span class="delay-unit">мс</span>
-							</div>
-							<div class="broadcast-cycle">
-								<label for="broadcastCycleToggle">Циклично:</label>
-								<label class="toggle-switch">
-									<input type="checkbox" id="broadcastCycleToggle">
-									<span class="toggle-slider"></span>
-								</label>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="controls-section">
-				<div class="status-display" data-status="stopped">
-					<span id="statusText">ОСТАНОВЛЕНО</span>
-				</div>
-				<div class="buttons">
-					<button id="startBtn" class="btn btn-start">ЗАПУСК</button>
-					<button id="stopBtn" class="btn btn-stop">СТОП</button>
-				</div>
-			</div>
-
-			<div class="footer">
-				<span>fail4k © 2025</span>
-			</div>
-		</div>
-		<div id="messageModal" class="modal">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h2>Сообщение для рассылки</h2>
-					<span class="close">&times;</span>
-				</div>
-				<div class="modal-body">
-					<div class="input-group">
-						<label for="broadcastMessage">Текст сообщения (макс. 130 символов):</label>
-						<textarea id="broadcastMessage" maxlength="130" rows="4" placeholder="Введите сообщение для рассылки...">Привет! Это тестовое сообщение для рассылки.</textarea>
-						<div class="char-counter"><span id="charCount">0</span>/130</div>
-					</div>
-					<div class="modal-footer">
-						<button id="saveMessageBtn" class="btn btn-start">Сохранить</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div id="serverListModal" class="modal">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h2>Список серверов</h2>
-					<span class="close">&times;</span>
-				</div>
-				<div class="modal-body">
-					<div class="input-group">
-						<label for="serverList">Введите серверы (по одному на строку):</label>
-						<textarea id="serverList" rows="10" placeholder="Введите серверы в формате IP:порт, каждый с новой строки. Например:&#10;127.0.0.1:8303&#10;example.com:8303"></textarea>
-					</div>
-					<div class="modal-footer">
-						<button id="saveServerListBtn" class="btn btn-start">Сохранить</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<script src="renderer.js"></script>
-	</body>
+    <script src="renderer.js"></script>
+</body>
 </html>
