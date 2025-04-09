@@ -1,8 +1,8 @@
 const { Client } = require('teeworlds')
 
 const DDNET_VERSION = {
-	version: 17,
-	release_version: '18.0.2'
+	version: 18,
+	release_version: '19.2'
 }
 
 // Глобальный массив активных ботов
